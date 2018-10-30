@@ -15,6 +15,7 @@ import pytz
 import pycurl
 import base64
 import ConfigParser
+import subprocess
 
 # Read the config file
 timezoneLocation = os.getenv('TZ', 'UTC')
@@ -42,6 +43,17 @@ timezoneLocation = config.get('ews-orgmode', 'timezone')
 daysHistory = config.getint('ews-orgmode', 'days_history')
 daysFuture = config.getint('ews-orgmode', 'days_future')
 maxEntries = config.getint('ews-orgmode', 'max_entries')
+
+def password_store_get_username():
+  out = subprocess.check_output(['pass', 'org-work-cal-user'])
+  return out.strip()
+
+def password_store_get_password():
+  out = subprocess.check_output(['pass', 'org-work-cal-password'])
+  return out.strip()
+
+ewsUser = password_store_get_username()
+ewsPassword = password_store_get_password()
 
 def parse_ews_date(dateStr):
   d = datetime.strptime(dateStr, "%Y-%m-%dT%H:%M:%SZ")
